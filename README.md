@@ -2,6 +2,10 @@
 
 The solidity contracts to coordinate the nodes and tasks.
 
+### Current Contract Scope
+
+For the current off-chain task dispatch architecture and the active Relay integration contract set, see [./docs/contract-roles-and-status.md](./docs/contract-roles-and-status.md).
+
 ### Task State Transitions
 ![Task State Transitions](./docs/state-transitions.png)
 
