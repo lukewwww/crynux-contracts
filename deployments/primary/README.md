@@ -57,7 +57,7 @@ Base Sepolia receives CNX from Ethereum Sepolia through the Base Standard Bridge
 
 `Crynux on Base Sepolia` is an L2 (L3 for Ethereum) Arbitrum Orbit chain whose parent chain is Base Sepolia.
 
-1. Confirm the Base Sepolia CNX token address is recorded in `testnet/base-sepolia/contracts.json`.
+1. Confirm the Base Sepolia CNX token address is recorded in `testnet/base-sepolia/contracts.json`, and fill `testnet/crynux-on-base-sepolia/config.json` with `crynux-contracts-params`. `creditsAdminAddress` MUST be left empty when bootstrap credit issuance is disabled.
 2. Run `npx tsx deployments/primary/testnet/crynux-on-base-sepolia/create-rollup.ts`. The script takes no CLI parameters and deploys the Orbit core contracts on Base Sepolia and records them in `testnet/crynux-on-base-sepolia/contracts.json`.
 3. Prepare the DAC key pair, DAC keyset, and related config according to [dac.md](./testnet/crynux-on-base-sepolia/dac.md).
 4. Update `testnet/crynux-on-base-sepolia/daserver.json` with the recorded `contracts.coreContracts.sequencerInbox` address.
@@ -78,8 +78,9 @@ For a single public sequencer, `coordinator.priorities` contains only that seque
 10. Run `npx tsx deployments/primary/testnet/crynux-on-base-sepolia/set-min-l2-base-fee.ts`. The script takes no CLI parameters and sets the configured minimum L2 base fee after the L2 RPC is reachable.
 11. Run `npx tsx deployments/primary/testnet/crynux-on-base-sepolia/create-token-bridge.ts`. The script takes no CLI parameters.
 12. Run `npx tsx deployments/primary/testnet/crynux-on-base-sepolia/deposit-base-cnx-to-crynux.ts <amount>`, where `<amount>` is the decimal CNX amount, such as `1.5`, to deposit from Base Sepolia into Crynux on Base Sepolia.
+13. Run `npx tsx deployments/primary/testnet/crynux-on-base-sepolia/deploy-crynux-contracts.ts`. The script takes no CLI parameters; it reads `crynux-contracts-params` from the chain config, writes the Hardhat Ignition parameter file, deploys `Credits`, `BenefitAddress`, `DelegatedStaking`, `NodeStaking`, and `ParameterController` on Crynux on Base Sepolia, and writes the deployed addresses to `testnet/crynux-on-base-sepolia/contracts.json`.
 
-The rollup script deploys the Orbit core contracts on Base Sepolia and records them in `testnet/crynux-on-base-sepolia/contracts.json`. The DAC keyset script submits the generated AnyTrust keyset to the rollup `SequencerInbox`. The Nitro config script writes the public and private node config files from the recorded rollup contracts, DAC endpoints, and configured keys. The token bridge script deploys or reads the Orbit token bridge contracts from the recorded rollup contracts. The deposit script checks Base Sepolia CNX balance and allowance, approves the Orbit inbox when required, and deposits CNX to mint native CNX on Crynux on Base Sepolia.
+The rollup script deploys the Orbit core contracts on Base Sepolia and records them in `testnet/crynux-on-base-sepolia/contracts.json`. The DAC keyset script submits the generated AnyTrust keyset to the rollup `SequencerInbox`. The Nitro config script writes the public and private node config files from the recorded rollup contracts, DAC endpoints, and configured keys. The token bridge script deploys or reads the Orbit token bridge contracts from the recorded rollup contracts. The deposit script checks Base Sepolia CNX balance and allowance, approves the Orbit inbox when required, and deposits CNX to mint native CNX on Crynux on Base Sepolia. The Crynux contracts script deploys the active Relay integration contracts required for node staking, delegated staking, bootstrap credits, benefit address binding, and governed parameter control.
 
 Nitro node config generation always writes two files:
 

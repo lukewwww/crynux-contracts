@@ -39,10 +39,24 @@ export type CrynuxOnBaseConfig = {
     publicSequencerUrl: string;
     privateRedisHost: string;
   };
+  'crynux-contracts-params': {
+    relayOperatorAddress: Address | '';
+    creditsAdminAddress: Address | '';
+    parameterWriterAddress: Address | '';
+    slashReceiverAddress: Address | '';
+  };
 };
 
 export type CrynuxOnBaseContracts = {
   coreContracts: CoreContracts;
+  nodeContracts?: {
+    credits: Address;
+    benefitAddress: Address;
+    delegatedStaking: Address;
+    nodeStaking: Address;
+    parameterController: Address;
+    deployedAtBlockNumber: number;
+  };
 };
 
 export const deploymentConfig = JSON.parse(await readFile(new URL('./config.json', import.meta.url), 'utf8')) as CrynuxOnBaseConfig;
