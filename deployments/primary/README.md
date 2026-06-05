@@ -52,6 +52,7 @@ Base Sepolia receives CNX from Ethereum Sepolia through the Base Standard Bridge
 1. Confirm the Ethereum Sepolia CNX token address is recorded in `testnet/ethereum-sepolia/contracts.json`.
 2. Run `npx tsx deployments/primary/testnet/base-sepolia/create-bridged-token.ts`. The script takes no CLI parameters. This script creates the bound ERC20 representation through the Base Sepolia `OptimismMintableERC20Factory` and records the created token address in `testnet/base-sepolia/contracts.json`.
 3. Run `npx tsx deployments/primary/testnet/base-sepolia/bridge-cnx-from-ethereum.ts <amount>`, where `<amount>` is the integer CNX amount to bridge from Ethereum Sepolia to Base Sepolia. This script checks the Ethereum Sepolia deployer balance and allowance, approves the Base Sepolia `L1StandardBridge` when required, calls `bridgeERC20`, waits 120 seconds, and prints the deployer's Base Sepolia CNX balance.
+4. Run `npx tsx deployments/primary/testnet/base-sepolia/deploy-benefit-address.ts`. The script takes no CLI parameters; it deploys `BenefitAddress` on Base Sepolia through Hardhat Ignition, reads the deployed address from Ignition output, and writes it to `testnet/base-sepolia/contracts.json`. Relay withdrawals on Base Sepolia MUST use this network-local `BenefitAddress` contract to validate payout destinations safely.
 
 ### Crynux On Base Sepolia
 
