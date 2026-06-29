@@ -7,7 +7,7 @@ import type { Address, Hex } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 
 export type PrimaryDeploymentNetwork = 'testnet' | 'mainnet';
-export type PrimaryLayer = 'ethereum' | 'base' | 'crynux-on-base';
+export type PrimaryLayer = 'ethereum' | 'base' | 'crynux-on-base' | 'near';
 
 type ParsedCli = {
   network: PrimaryDeploymentNetwork;
@@ -31,11 +31,13 @@ export const primaryRuntime = {
         ethereum: 'Ethereum Sepolia',
         base: 'Base Sepolia',
         crynuxOnBase: 'Crynux on Base Sepolia',
+        near: 'NEAR Testnet',
       }
     : {
         ethereum: 'Ethereum',
         base: 'Base',
         crynuxOnBase: 'Crynux on Base',
+        near: 'NEAR',
       },
   hardhatNetworks: parsedCli.network === 'testnet'
     ? {
@@ -104,11 +106,13 @@ export function getPrimaryLayerDir(layer: PrimaryLayer): string {
         ethereum: 'ethereum-sepolia',
         base: 'base-sepolia',
         'crynux-on-base': 'crynux-on-base-sepolia',
+        near: 'near',
       }[layer]
     : {
         ethereum: 'ethereum',
         base: 'base',
         'crynux-on-base': 'crynux-on-base',
+        near: 'near',
       }[layer];
 
   return resolve(primaryRuntime.networkDir, layerFolder);
