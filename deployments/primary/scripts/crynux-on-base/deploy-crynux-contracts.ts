@@ -20,7 +20,7 @@ expectPositionalArgs(0, 'npx tsx deployments/primary/scripts/crynux-on-base/depl
 
 const paramsPath = resolve('cache', buildPrimaryCacheFileName('primary-crynux-on-base-deploy-l2-node-contracts-params'));
 const contractsFile = getPrimaryLayerFile('crynux-on-base', 'contracts.json');
-const deploymentId = buildPrimaryDeploymentId('primary-crynux-on-base-deploy-l2-node-contracts-v2');
+const deploymentId = buildPrimaryDeploymentId('primary-crynux-on-base-deploy-l2-node-contracts');
 const ignitionAddressesFile = resolve('ignition', 'deployments', deploymentId, 'deployed_addresses.json');
 const ignitionAddressKeys = {
   benefitAddress: ['DeployNodeContracts#BenefitAddress', 'DeployNodeContracts#benefitAddress'],
@@ -40,9 +40,9 @@ function getDeployedAddress(deployedAddresses: Record<string, string>, keys: rea
   throw new Error(`Could not find ${name} in ${ignitionAddressesFile}.`);
 }
 
-if (deploymentContracts.nodeContractsV2 !== undefined) {
+if (deploymentContracts.nodeContracts !== undefined) {
   console.log(`${primaryRuntime.names.crynuxOnBase} node contracts are already recorded. Skipping deployment.`);
-  console.log(JSON.stringify(deploymentContracts.nodeContractsV2, null, 2));
+  console.log(JSON.stringify(deploymentContracts.nodeContracts, null, 2));
   process.exit(0);
 }
 
@@ -77,7 +77,7 @@ await run('npx', [
 const deployedAddresses = JSON.parse(await readFile(ignitionAddressesFile, 'utf8')) as Record<string, string>;
 const updatedContracts: CrynuxOnBaseContracts = {
   ...deploymentContracts,
-  nodeContractsV2: {
+  nodeContracts: {
     benefitAddress: assertAddress(getDeployedAddress(deployedAddresses, ignitionAddressKeys.benefitAddress, 'BenefitAddress'), 'ignition.BenefitAddress'),
     delegatedStaking: assertAddress(
       getDeployedAddress(deployedAddresses, ignitionAddressKeys.delegatedStaking, 'DelegatedStaking'),
@@ -91,4 +91,4 @@ const updatedContracts: CrynuxOnBaseContracts = {
 await writeFile(contractsFile, `${JSON.stringify(updatedContracts, null, 2)}\n`);
 
 console.log(`${primaryRuntime.names.crynuxOnBase} node contracts recorded:`);
-console.log(JSON.stringify(updatedContracts.nodeContractsV2, null, 2));
+console.log(JSON.stringify(updatedContracts.nodeContracts, null, 2));

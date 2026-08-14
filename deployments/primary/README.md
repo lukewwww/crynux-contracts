@@ -169,8 +169,8 @@ docker compose -f nitro-node/docker-compose.public.yml exec sequencer-redis \
    - This script MUST run only after `create-token-bridge.ts` completes successfully.
 6. Deploy Crynux node contracts:
    - `npx tsx deployments/primary/scripts/crynux-on-base/deploy-crynux-contracts.ts --network=<testnet|mainnet>`
-   - This script reads `crynux-contracts-params`, writes Ignition parameters, deploys `BenefitAddress`, `DelegatedStaking`, and `NodeStaking`, and writes the new addresses as `nodeContractsV2` in `<network>/<crynux-layer>/contracts.json`.
-   - Historical `nodeContracts` records containing Credits and ParameterController addresses MUST remain unchanged.
+   - This script reads `crynux-contracts-params`, writes Ignition parameters, deploys `BenefitAddress`, `DelegatedStaking`, and `NodeStaking`, and writes the addresses as `nodeContracts` in `<network>/<crynux-layer>/contracts.json`.
+   - If `nodeContracts` is already recorded, the script skips deployment. Remove `nodeContracts` from that `contracts.json` before redeploying.
 7. Run withdrawal and claim operations:
    - `npx tsx deployments/primary/scripts/crynux-on-base/withdraw-crynux-to-base.ts <amount> [destinationAddress] --network=<testnet|mainnet>`
    - `npx tsx deployments/primary/scripts/crynux-on-base/claim-crynux-withdrawal.ts <withdrawalTxHash> --network=<testnet|mainnet>`

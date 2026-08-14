@@ -56,14 +56,6 @@ export type CrynuxOnBaseConfig = {
 export type CrynuxOnBaseContracts = {
   coreContracts: CoreContracts;
   nodeContracts?: {
-    credits: Address;
-    benefitAddress: Address;
-    delegatedStaking: Address;
-    nodeStaking: Address;
-    parameterController: Address;
-    deployedAtBlockNumber: number;
-  };
-  nodeContractsV2?: {
     benefitAddress: Address;
     delegatedStaking: Address;
     nodeStaking: Address;
