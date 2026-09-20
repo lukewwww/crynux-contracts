@@ -40,7 +40,9 @@ The deployment parameter file MUST use this shape:
 
 `relayOperatorAddress` and `slashReceiverAddress` MUST be nonzero.
 
-`nodeMinStakeAmount`, `delegatedMinStakeAmount`, and `forceUnstakeDelay` MUST be positive. Crynux-on-base-sepolia (testnet) config MUST use `400e18` for both minimum stake amounts. Crynux-on-base (mainnet) config MUST use `100000e18` for both minimum stake amounts. The Ignition module default for both minimum stake amounts MUST be `400e18`. The Ignition module default for `forceUnstakeDelay` MUST be `1800` seconds.
+`nodeMinStakeAmount`, `delegatedMinStakeAmount`, and `forceUnstakeDelay` MUST be positive. Crynux on Base testnet and Crynux on RH Testnet configs MUST use `400e18` for both minimum stake amounts. Crynux on Base and Crynux on RH mainnet configs MUST use `100000e18` for both minimum stake amounts. Every Crynux on RH environment MUST use the same-environment Crynux on Base Relay operator, fixed slash receiver, and `1800`-second force-unstake delay. The Ignition module default for both minimum stake amounts MUST be `400e18`. The Ignition module default for `forceUnstakeDelay` MUST be `1800` seconds.
+
+Crynux on RH MUST use chain ID `18896215`. Crynux on RH Testnet MUST use chain ID `188962150`. Node contracts on these chains MUST use native CNX and MUST follow the same deployment order, runtime authority, observer configuration, and governance handoff defined in this document.
 
 The module MUST deploy contracts in this order:
 

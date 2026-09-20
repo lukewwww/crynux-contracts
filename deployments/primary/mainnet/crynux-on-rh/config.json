@@ -1,0 +1,36 @@
+{
+  "chainId": 18896215,
+  "name": "Crynux on RH",
+  "rpcUrl": "https://json-rpc.rh.crynux.io",
+  "minL2BaseFee": 700000000,
+  "batchPosterAddress": "",
+  "validatorAddress": "",
+  "dacKeyset": {
+    "assumed-honest": 1,
+    "backends": [
+      {
+        "url": "https://rpc.das.rh.crynux.io",
+        "pubkey": ""
+      }
+    ]
+  },
+  "dacRestUrls": [
+    "https://rest.das.rh.crynux.io"
+  ],
+  "generatedDacKeyset": {
+    "keyset": "",
+    "keysetHash": ""
+  },
+  "production": {
+    "redisPassword": "",
+    "publicSequencerUrl": "https://json-rpc.rh.crynux.io",
+    "privateRedisHost": ""
+  },
+  "crynux-contracts-params": {
+    "relayOperatorAddress": "0xA81a1E5311930A506ABE7c520944F6192Cce36d7",
+    "slashReceiverAddress": "0xF1740ef3C6830Bd02CBfA76de83549F6825cd0Ce",
+    "nodeMinStakeAmount": "100000000000000000000000",
+    "delegatedMinStakeAmount": "100000000000000000000000",
+    "forceUnstakeDelay": 1800
+  }
+}
