@@ -50,10 +50,12 @@ Fill the selected Crynux on Base `config.json` before deployment:
 - `validatorAddress`
 - `dacKeyset`
 - `dacRestUrls`
-- `production`
+- `production.publicSequencerUrl`
 - `crynux-contracts-params`
 
 `crynux-contracts-params` MUST define the Relay operator, fixed slash receiver, both initial minimum stake amounts, and the initial force-unstake delay.
+
+Operator private keys, Redis password, and private Redis host MUST be entered only on the target machines. Do not write Redis password or private Redis host into `config.json`.
 
 ## Ethereum ↔ Base Canonical Bridge
 
@@ -135,6 +137,8 @@ npx tsx deployments/primary/scripts/crynux-on-base/set-confirm-period-blocks.ts 
 npx tsx deployments/primary/scripts/crynux-on-base/generate-nitro-node-config.ts --network=<testnet|mainnet>
 ```
 
+The generated configs write Redis password and private Redis host placeholders. Replace those placeholders only on the target machines.
+
 ## Nitro And DAS Startup
 
 The selected Crynux on Base network directory MUST contain:
@@ -144,6 +148,10 @@ The selected Crynux on Base network directory MUST contain:
 - `nitro-node/nitro-node.private.json`
 - `nitro-node/docker-compose.public.yml`
 - `nitro-node/docker-compose.private.yml`
+
+Before starting public services, replace the Redis password placeholder in `docker-compose.public.yml` and in `nitro-node.public.json` `node.seq-coordinator.redis-url` on the public host. The same password MUST be used in both files.
+
+Before starting private operators, replace the Redis password and private Redis host placeholders in `nitro-node.private.json` `node.seq-coordinator.redis-url` on the private host. The Redis password MUST match the public Redis password. The private Redis host MUST be the hostname or address that reaches the public sequencer Redis from the private host.
 
 Start the public services, then initialize the sequencer coordinator:
 
@@ -173,7 +181,7 @@ npx tsx deployments/primary/scripts/crynux-on-base/set-min-l2-base-fee.ts --netw
 2. Set the infrastructure fee account, network fee account, and L1 pricing reward recipient to `daoTreasuryAddress`:
 
 ```powershell
-npx tsx deployments/primary/scripts/crynux-on-base/set-l2-tx-fee-receiver.ts --network=<testnet|mainnet>
+npx tsx deployments/primary/scripts/crynux-on-base/set-l2-tx-fee-receiver.ts [transactionMaxFeePerGasWei] --network=<testnet|mainnet>
 ```
 
 3. Deploy the Base ↔ Crynux on Base Orbit token bridge:

@@ -22,9 +22,7 @@
     "keysetHash": ""
   },
   "production": {
-    "redisPassword": "change-it",
-    "publicSequencerUrl": "",
-    "privateRedisHost": ""
+    "publicSequencerUrl": ""
   },
   "crynux-contracts-params": {
     "relayOperatorAddress": "0xA81a1E5311930A506ABE7c520944F6192Cce36d7",

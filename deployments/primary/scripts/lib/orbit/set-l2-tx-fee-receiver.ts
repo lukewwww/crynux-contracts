@@ -1,22 +1,64 @@
 import { arbGasInfoPublicActions, arbOwnerPublicActions } from '@arbitrum/chain-sdk';
 import type { Address } from 'viem';
-import { expectPositionalArgs, getPrimaryConfig } from '../../common.js';
+import { expectAtLeastPositionalArgs, getPrimaryConfig } from '../../common.js';
 import { orbitRuntime, getDeployerAccount, orbitChainPublicClient, assertAddress, deploymentConfig } from './runtime.js';
 
-expectPositionalArgs(0, `npx tsx deployments/primary/scripts/${orbitRuntime.scriptDir}/set-l2-tx-fee-receiver.ts`);
+const [transactionMaxFeePerGasInput, ...extraArgs] = expectAtLeastPositionalArgs(
+  0,
+  `npx tsx deployments/primary/scripts/${orbitRuntime.scriptDir}/set-l2-tx-fee-receiver.ts [transactionMaxFeePerGasWei]`,
+);
+
+if (extraArgs.length > 0) {
+  throw new Error(
+    `Usage: npx tsx deployments/primary/scripts/${orbitRuntime.scriptDir}/set-l2-tx-fee-receiver.ts [transactionMaxFeePerGasWei] --network=<testnet|mainnet>`,
+  );
+}
+
+function parseOptionalTransactionMaxFeePerGas(value: string | undefined): bigint | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  if (!/^[1-9][0-9]*$/.test(value)) {
+    throw new Error('transactionMaxFeePerGasWei must be a positive integer in wei.');
+  }
+
+  return BigInt(value);
+}
 
 const primaryConfig = await getPrimaryConfig();
 const daoTreasuryAddress = assertAddress(primaryConfig.daoTreasuryAddress, 'common.daoTreasuryAddress');
 const deployer = await getDeployerAccount();
 const orbitChainClient = orbitChainPublicClient.extend(arbGasInfoPublicActions).extend(arbOwnerPublicActions);
+const transactionMaxFeePerGas = parseOptionalTransactionMaxFeePerGas(transactionMaxFeePerGasInput);
+
+console.log('Transaction max fee per gas override:', transactionMaxFeePerGas?.toString() ?? 'network default');
 
 function isSameAddress(left: Address, right: Address): boolean {
   return left.toLowerCase() === right.toLowerCase();
 }
 
+function applyTransactionMaxFeePerGasOverride(
+  transactionRequest: Parameters<typeof deployer.signTransaction>[0],
+): Parameters<typeof deployer.signTransaction>[0] {
+  if (transactionMaxFeePerGas === undefined) {
+    return transactionRequest;
+  }
+
+  return {
+    ...transactionRequest,
+    gasPrice: undefined,
+    maxFeePerGas: transactionMaxFeePerGas,
+    maxPriorityFeePerGas:
+      transactionRequest.maxPriorityFeePerGas !== undefined && transactionRequest.maxPriorityFeePerGas <= transactionMaxFeePerGas
+        ? transactionRequest.maxPriorityFeePerGas
+        : BigInt(0),
+  };
+}
+
 async function waitForOwnerTransaction(transactionRequest: Parameters<typeof deployer.signTransaction>[0], label: string) {
   const hash = await orbitChainClient.sendRawTransaction({
-    serializedTransaction: await deployer.signTransaction(transactionRequest),
+    serializedTransaction: await deployer.signTransaction(applyTransactionMaxFeePerGasOverride(transactionRequest)),
   });
   const transactionReceipt = await orbitChainClient.waitForTransactionReceipt({ hash });
 

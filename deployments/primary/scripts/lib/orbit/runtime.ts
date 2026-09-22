@@ -37,9 +37,7 @@ export type OrbitDeploymentConfig = {
   generatedDacKeyset: { keyset: Hex | ''; keysetHash: Hex | '' };
   dacRestUrls: string[];
   production: {
-    redisPassword: string;
     publicSequencerUrl: string;
-    privateRedisHost: string;
   };
   'crynux-contracts-params': {
     relayOperatorAddress: Address | '';

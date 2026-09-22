@@ -45,7 +45,7 @@ npx hardhat keystore set TESTNET_DEPLOYER_PRIVATE_KEY
 npx hardhat keystore set MAINNET_DEPLOYER_PRIVATE_KEY
 ```
 
-The generated DAS private key MUST remain uncommitted and MUST be transferred only to the DAS host. Operator private keys MUST be entered only on their target machines.
+The generated DAS private key MUST remain uncommitted and MUST be transferred only to the DAS host. Operator private keys MUST be entered only on their target machines. Redis password and private Redis host MUST be entered only on the target machines.
 
 Every command MUST validate the configuration and recorded contract addresses it uses before sending a transaction.
 
@@ -143,13 +143,7 @@ For testnet, copy `coreContracts.sequencerInbox` from `deployments/primary/testn
 
 For mainnet, copy `coreContracts.sequencerInbox` from `deployments/primary/mainnet/crynux-on-rh/contracts.json` into `parent-chain.sequencer-inbox-address` in `deployments/primary/mainnet/crynux-on-rh/daserver.json`.
 
-7. Fill Redis settings before generating Nitro configs.
-
-For testnet, write `production.redisPassword` and `production.privateRedisHost` into `deployments/primary/testnet/crynux-on-rh-testnet/config.json`.
-
-For mainnet, write `production.redisPassword` and `production.privateRedisHost` into `deployments/primary/mainnet/crynux-on-rh/config.json`.
-
-8. Generate both Nitro configs:
+7. Generate both Nitro configs:
 
 ```powershell
 npx tsx deployments/primary/scripts/crynux-on-rh/generate-nitro-node-config.ts --network=<testnet|mainnet>
@@ -157,9 +151,15 @@ npx tsx deployments/primary/scripts/crynux-on-rh/generate-nitro-node-config.ts -
 
 The generated public config keeps the public sequencer, DAS REST aggregator, sequencer coordinator, `CalldataPrice` surplus mode, `85000` maximum transaction data size, and archive caching. The generated private config keeps the batch poster, validator, DAS RPC and REST aggregators, `assumed-honest = 1`, `90000` maximum DAS batch size, sequencer coordinator, and archive caching.
 
-9. Fund the `batchPosterAddress` and `validatorAddress` with Robinhood ETH. Fund the `validatorAddress` with `1` Robinhood CNX for rollup staking.
+The generated configs write Redis password and private Redis host placeholders. Replace those placeholders only on the target machines. Do not write Redis password or private Redis host into `config.json`.
+
+8. Fund the `batchPosterAddress` and `validatorAddress` with Robinhood ETH. Fund the `validatorAddress` with `1` Robinhood CNX for rollup staking.
 
 ## Nitro And DAS Startup
+
+Before starting public services, replace the Redis password placeholder in `docker-compose.public.yml` and in `nitro-node.public.json` `node.seq-coordinator.redis-url` on the public host. The same password MUST be used in both files.
+
+Before starting private operators, replace the Redis password and private Redis host placeholders in `nitro-node.private.json` `node.seq-coordinator.redis-url` on the private host. The Redis password MUST match the public Redis password. The private Redis host MUST be the hostname or address that reaches the public sequencer Redis from the private host.
 
 Start the mainnet public services, initialize the coordinator priority, and start the private operators:
 
@@ -177,6 +177,8 @@ docker compose -f deployments/primary/testnet/crynux-on-rh-testnet/nitro-node/do
 docker compose -f deployments/primary/testnet/crynux-on-rh-testnet/nitro-node/docker-compose.private.yml up -d
 ```
 
+Real batch-poster and validator private keys MUST be entered only in `nitro-node.private.json` on the target machine.
+
 ## Crynux on RH Configuration And Contracts
 
 1. Set the minimum L2 base fee:
@@ -192,7 +194,7 @@ For testnet, use `daoTreasuryAddress` from `deployments/primary/testnet/common.j
 For mainnet, use `daoTreasuryAddress` from `deployments/primary/mainnet/common.json`.
 
 ```powershell
-npx tsx deployments/primary/scripts/crynux-on-rh/set-l2-tx-fee-receiver.ts --network=<testnet|mainnet>
+npx tsx deployments/primary/scripts/crynux-on-rh/set-l2-tx-fee-receiver.ts [transactionMaxFeePerGasWei] --network=<testnet|mainnet>
 ```
 
 3. Deploy the Robinhood ↔ Crynux on RH Orbit token bridge:

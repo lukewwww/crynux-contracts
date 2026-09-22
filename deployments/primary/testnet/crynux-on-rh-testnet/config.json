@@ -22,9 +22,7 @@
     "keysetHash": "0x37a4b8ca69b792fd615886077ef1a44901e36b7249ef28647cbcb78d5af34931"
   },
   "production": {
-    "redisPassword": "testnetredis",
-    "publicSequencerUrl": "https://json-rpc.rh-testnet.crynux.io",
-    "privateRedisHost": "host.docker.internal"
+    "publicSequencerUrl": "https://json-rpc.rh-testnet.crynux.io"
   },
   "crynux-contracts-params": {
     "relayOperatorAddress": "0x1FEaC5A57Ec8db4cDF71dE51539aD3AE31210102",

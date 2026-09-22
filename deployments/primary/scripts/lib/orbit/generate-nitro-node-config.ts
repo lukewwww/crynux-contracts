@@ -13,26 +13,17 @@ const parentChainLogQueryBatchSize = 1_000;
 const parentChainInboxReaderDefaultBlocksToRead = 100;
 const parentChainInboxReaderMaxBlocksToRead = 1_000;
 const privateKeyPlaceholder = '<paste-private-key-on-target-machine>';
+const redisPasswordPlaceholder = '<paste-redis-password-on-target-machine>';
+const privateRedisHostPlaceholder = '<paste-private-redis-host-on-target-machine>';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
-}
-
-function requireRedisPassword(): string {
-  if (deploymentConfig.production.redisPassword.length === 0) {
-    throw new Error('config.json must define production.redisPassword.');
-  }
-
-  return deploymentConfig.production.redisPassword;
 }
 
 function validateNodeConfiguration(): void {
   const missingFields = [
     ...(deploymentConfig.production.publicSequencerUrl.length === 0
       ? ['production.publicSequencerUrl']
-      : []),
-    ...(deploymentConfig.production.privateRedisHost.length === 0
-      ? ['production.privateRedisHost']
       : []),
     ...(deploymentConfig.dacRestUrls.length === 0
       || deploymentConfig.dacRestUrls.some((url) => url.length === 0)
@@ -42,7 +33,6 @@ function validateNodeConfiguration(): void {
   if (missingFields.length > 0) {
     throw new Error(`config.json must define: ${missingFields.join(', ')}.`);
   }
-  requireRedisPassword();
   getDacKeysetConfig();
 }
 
@@ -152,7 +142,7 @@ function createPublicConfig(config: Record<string, unknown>) {
     delete nodeConfig.staker;
     nodeConfig['seq-coordinator'] = {
       enable: true,
-      'redis-url': `redis://:${requireRedisPassword()}@sequencer-redis:6488`,
+      'redis-url': `redis://:${redisPasswordPlaceholder}@sequencer-redis:6488`,
       'my-url': deploymentConfig.production.publicSequencerUrl,
     };
     const feedConfig = isRecord(nodeConfig.feed) ? nodeConfig.feed : {};
@@ -218,7 +208,7 @@ function createPrivateConfig(config: Record<string, unknown>) {
     delete nodeConfig['delayed-sequencer'];
     nodeConfig['seq-coordinator'] = {
       enable: true,
-      'redis-url': `redis://:${requireRedisPassword()}@${deploymentConfig.production.privateRedisHost}:6488`,
+      'redis-url': `redis://:${redisPasswordPlaceholder}@${privateRedisHostPlaceholder}:6488`,
     };
   }
 

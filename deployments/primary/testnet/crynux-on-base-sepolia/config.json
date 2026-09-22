@@ -20,9 +20,7 @@
     "keysetHash": ""
   },
   "production": {
-    "redisPassword": "change-it",
-    "publicSequencerUrl": "https://json-rpc.base-sepolia.crynux.io",
-    "privateRedisHost": "<public-rpc-sequencer-host>"
+    "publicSequencerUrl": "https://json-rpc.base-sepolia.crynux.io"
   },
   "crynux-contracts-params": {
     "relayOperatorAddress": "0x1FEaC5A57Ec8db4cDF71dE51539aD3AE31210102",

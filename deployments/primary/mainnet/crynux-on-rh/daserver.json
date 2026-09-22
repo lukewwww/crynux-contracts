@@ -1,7 +1,7 @@
 {
   "parent-chain": {
     "node-url": "https://rpc.mainnet.chain.robinhood.com",
-    "sequencer-inbox-address": ""
+    "sequencer-inbox-address": "0x57f881bee7bb8e5E9Ac72A9DB3B3C27a298bdfD9"
   },
   "data-availability": {
     "key": {
