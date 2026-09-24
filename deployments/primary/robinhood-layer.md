@@ -67,14 +67,27 @@ npx tsx deployments/primary/scripts/robinhood/deposit-cnx-from-ethereum.ts <amou
 npx tsx deployments/primary/scripts/robinhood/deposit-eth-from-ethereum.ts <eth-amount> --network=<testnet|mainnet>
 ```
 
-4. Withdraw and claim CNX through the same Robinhood-specific canonical bridge instance:
+4. Deploy the Robinhood Chain `BenefitAddress` used to validate Relay withdrawal destinations:
+
+```powershell
+npx tsx deployments/primary/scripts/robinhood/deploy-benefit-address.ts --network=<testnet|mainnet>
+```
+
+The script MUST record `benefitAddress` and `benefitAddressDeployedAtBlockNumber` in:
+
+- `deployments/primary/testnet/robinhood-testnet/contracts.json` for testnet
+- `deployments/primary/mainnet/robinhood/contracts.json` for mainnet
+
+If `benefitAddress` is already recorded, the command MUST skip deployment.
+
+5. Withdraw and claim CNX through the same Robinhood-specific canonical bridge instance:
 
 ```powershell
 npx tsx deployments/primary/scripts/robinhood/withdraw-cnx-to-ethereum.ts <amount> [destinationAddress] --network=<testnet|mainnet>
 npx tsx deployments/primary/scripts/robinhood/claim-cnx-withdrawal.ts <withdrawalTxHash> --network=<testnet|mainnet>
 ```
 
-5. Redeem a failed retryable ticket:
+6. Redeem a failed retryable ticket:
 
 ```powershell
 npx tsx deployments/primary/scripts/robinhood/redeem-retryable.ts <parentTransactionHash> <retryableCreationId> [gasLimit] [maxFeePerGasGwei] [maxPriorityFeePerGasGwei] --network=<testnet|mainnet>
