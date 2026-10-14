@@ -212,14 +212,26 @@ npx tsx deployments/primary/scripts/crynux-on-base/deploy-crynux-contracts.ts --
 
 If `nodeContracts` is already recorded, the command MUST skip deployment.
 
-7. Withdraw and claim native CNX through the Crynux on Base Orbit bridge:
+7. Deploy `NoOpStakeObserver` (temporary empty observer so nodes can join the network before governance is deployed). If `noopStakeObserver` is already recorded in `contracts.json`, the script skips deployment:
+
+```powershell
+npx tsx deployments/primary/scripts/crynux-on-base/deploy-noop-stake-observer.ts --network=<testnet|mainnet>
+```
+
+8. Point both staking contracts at the recorded `noopStakeObserver`. The deployer account MUST still be Owner of both contracts:
+
+```powershell
+npx tsx deployments/primary/scripts/crynux-on-base/set-noop-staking-observers.ts --network=<testnet|mainnet>
+```
+
+9. Withdraw and claim native CNX through the Crynux on Base Orbit bridge:
 
 ```powershell
 npx tsx deployments/primary/scripts/crynux-on-base/withdraw-crynux-to-base.ts <amount> [destinationAddress] --network=<testnet|mainnet>
 npx tsx deployments/primary/scripts/crynux-on-base/claim-crynux-withdrawal.ts <withdrawalTxHash> --network=<testnet|mainnet>
 ```
 
-8. Lock and unlock value-bearing child-to-parent withdrawals:
+10. Lock and unlock value-bearing child-to-parent withdrawals:
 
 ```powershell
 npx tsx deployments/primary/scripts/crynux-on-base/add-native-token-owner.ts <ownerAddress> --network=<testnet|mainnet>
